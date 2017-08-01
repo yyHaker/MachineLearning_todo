@@ -175,6 +175,7 @@ def classify(inputTree, featLabels, testVec):
     :return:
     """
     firstStr = list(inputTree.keys())[0]
+    classLabel = ""
     if u'<=' in firstStr:
         featvalue = float(firstStr.split(u"<=")[1])
         featkey = firstStr.split(u"<=")[0]
@@ -231,6 +232,7 @@ def caclAccuracyRate(mtTree, data_test, lables):
     """
     return 1 - testing(myTree, data_test, lables)/float(len(data_test))
 
+
 def testing_feat(feat, train_data, test_data, labels):
     """
     评测若选择当前最优的划分属性进行划分所产生决策树的泛化能力
@@ -242,7 +244,12 @@ def testing_feat(feat, train_data, test_data, labels):
     """
     # 训练数据的类别集合
     class_list = [example[-1] for example in train_data]
-    bestFeatIndex = lables.index(feat)
+    if "<=" in feat:
+        featName = feat.split("<=")[0]
+    else:
+        featName = feat
+
+    bestFeatIndex = lables.index(featName)
     # 当前最优化分属性下标在测试数据中对应的turple(属性取值，所属类别)
     test_data = [(example[bestFeatIndex], example[-1]) for example in test_data]
     error = 0.0
@@ -334,6 +341,8 @@ def createTree(dataSet, labels, data_full, labels_full, test_data, mode="unpro")
     if mode == "unpro" or mode == "post":
         myTree = {bestFeatLabel: {}}
     elif mode == "prev":
+        testingfeat = testing_feat(bestFeatLabel, dataSet, test_data, labels_copy)
+        testingmajor = testingMajor(majorityCnt(classList), test_data)
         if testing_feat(bestFeatLabel, dataSet, test_data, labels_copy) < testingMajor(majorityCnt(classList), test_data):
             myTree = {bestFeatLabel: {}}
         else:
@@ -410,6 +419,8 @@ if __name__ == "__main__":
     data_full = train_data[:]
     labels_full = labels[:]
     """
+
+    """
     # 数据测试
     df = pd.read_csv('watermellon4.2.1.csv')
     data = df.values[:11, 1:].tolist()
@@ -417,17 +428,42 @@ if __name__ == "__main__":
     data_full = data[:]
     lables = df.columns.values[1:-1].tolist()
     lables_full = lables[:]
-    """
-    为了代码的简洁，将预剪枝，后剪枝和未剪枝三种模式用一个参数mode传入建树的过程
-    post代表后剪枝，prev代表预剪枝，unpro代表不剪枝
-    """
-    # mode = "unpro"
+
+     # 得到数据
+    df = pd.read_csv('winequality-white.csv')  # 4898条数据
+    data = df.values[:2000, :].tolist()
+    test_data = df.values[2000:, :].tolist()
+    data_full = data[:]
+    lables = df.columns.values[:-1].tolist()
+    lables_full = lables[:]
+
+    # 为了代码的简洁，将预剪枝，后剪枝和未剪枝三种模式用一个参数mode传入建树的过程
+    # post代表后剪枝，prev代表预剪枝，unpro代表不剪枝
+    mode = "unpro"
     # mode = "prev"
     # mode = "post"
-    mode = "unpro"
+    # mode = "prev"
     myTree = createTree(data, lables, data_full, lables_full, test_data, mode=mode)
     # myTree = postPruningTree(myTree,train_data,test_data,labels_full)
     print(myTree)
     print(json.dumps(myTree, ensure_ascii=False, indent=4))
+    print("accuracyRate:", caclAccuracyRate(myTree, test_data, lables_full))
+    treePlotter.createPlot(myTree)
+    """
+
+    # 得到数据 adult.csv
+    df = pd.read_csv('adult.csv')
+    data = df.values[:200, :].tolist()
+    test_data = df.values[200:, :].tolist()
+    data_full = data[:]
+    lables = df.columns.values[:-1].tolist()
+    lables_full = lables[:]
+
+    print(data)
+    print(test_data)
+    mode = "prev"
+    # mode = "unpro"
+    myTree = createTree(data, lables, data_full, lables_full, test_data, mode=mode)
+    print(myTree)
     print("accuracyRate:", caclAccuracyRate(myTree, test_data, lables_full))
     treePlotter.createPlot(myTree)
