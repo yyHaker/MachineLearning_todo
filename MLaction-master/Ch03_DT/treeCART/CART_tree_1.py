@@ -452,9 +452,9 @@ if __name__ == "__main__":
     """
 
     # 得到数据 adult.csv
-    df = pd.read_csv('adult.csv')
-    data = df.values[:200, :].tolist()
-    test_data = df.values[200:, :].tolist()
+    df = pd.read_csv('iris.csv')
+    data = df.values[:100, :].tolist()
+    test_data = df.values[100:, :].tolist()
     data_full = data[:]
     lables = df.columns.values[:-1].tolist()
     lables_full = lables[:]

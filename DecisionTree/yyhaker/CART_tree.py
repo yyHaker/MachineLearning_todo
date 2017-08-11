@@ -378,9 +378,9 @@ if __name__ == "__main__":
     lables_full = lables[:]
     """
     # 得到数据 adult.csv
-    df = pd.read_csv('adult.csv')
-    data = df.values[:200, :].tolist()
-    test_data = df.values[200, :].tolist()
+    df = pd.read_csv('iris.csv')
+    data = df.values[:100, :].tolist()
+    test_data = df.values[100:, :].tolist()
     data_full = data[:]
     lables = df.columns.values[:-1].tolist()
     lables_full = lables[:]
@@ -402,7 +402,7 @@ if __name__ == "__main__":
     lables = df.columns.values[1:-1].tolist()
     lables_full = lables[:]
     """
-    #为了代码的简洁，将预剪枝，后剪枝和未剪枝三种模式用一个参数mode传入建树的过程
+    # 为了代码的简洁，将预剪枝，后剪枝和未剪枝三种模式用一个参数mode传入建树的过程
     # post代表后剪枝，prev代表预剪枝，unpro代表不剪枝
     """
     mode = "unpro"
@@ -415,7 +415,6 @@ if __name__ == "__main__":
     print(json.dumps(myTree, ensure_ascii=False, indent=4))
     print("accuracyRate:", caclAccuracyRate(myTree, test_data, lables_full))
     treePlotter.createPlot(myTree)
-
     """
 
 
