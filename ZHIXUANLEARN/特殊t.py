@@ -1,6 +1,8 @@
 # test
 
 import numpy as np
-
-a = np.equal([1,2,3,3,2,4],3)
-print(a)
+import operator
+classCount = {'2': 4, '5': 8, '9': 40}
+sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+print(classCount.items())
+print(sortedClassCount)
